@@ -1,0 +1,81 @@
+{
+  "name": "stablesentinel",
+  "version": "0.1.0",
+  "description": "Real-time stablecoin health monitoring and risk intelligence SDK",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "stablesentinel": "dist/cli.js",
+    "ss": "dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "build:watch": "tsc --watch",
+    "dev": "npm run build:watch",
+    "start": "node dist/cli.js",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "lint": "eslint src --ext .ts",
+    "lint:fix": "eslint src --ext .ts --fix",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm test && npm run lint"
+  },
+  "keywords": [
+    "stablecoin",
+    "defi",
+    "crypto",
+    "risk-monitoring",
+    "blockchain",
+    "depeg",
+    "price-feed",
+    "ethereum",
+    "web3",
+    "usdt",
+    "usdc",
+    "dai",
+    "risk-assessment",
+    "portfolio-monitoring"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yourusername/stablesentinel.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/stablesentinel.git/issues"
+  },
+  "homepage": "https://github.com/yourusername/stablesentinel#readme",
+  "author": "StableSentinel Contributors",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.7.0",
+    "chalk": "^4.1.2",
+    "cli-table3": "^0.6.5",
+    "commander": "^12.0.0",
+    "dotenv": "^16.4.0",
+    "ethers": "^6.13.0",
+    "node-cache": "^5.1.2",
+    "ora": "^5.4.1"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.11",
+    "@types/node": "^20.11.0",
+    "@typescript-eslint/eslint-plugin": "^6.19.0",
+    "@typescript-eslint/parser": "^6.19.0",
+    "eslint": "^8.56.0",
+    "jest": "^29.7.0",
+    "prettier": "^3.2.0",
+    "ts-jest": "^29.1.0",
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "QUICKSTART.md"
+  ]
+}
