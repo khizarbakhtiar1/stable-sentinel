@@ -31,6 +31,8 @@ export interface StablecoinMetadata {
   decimals: number;
   website?: string;
   coingeckoId?: string;
+  /** Stablecoin is deprecated / being wound down */
+  deprecated?: boolean;
 }
 
 /**
@@ -107,6 +109,8 @@ export interface StableSentinelConfig {
   apiKeys?: {
     coingecko?: string;
     coinmarketcap?: string;
+    /** Set to true if using a paid CoinGecko Pro API key */
+    coingeckoIsPro?: boolean;
   };
   cache?: {
     enabled?: boolean;

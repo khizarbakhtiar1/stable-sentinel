@@ -19,6 +19,7 @@ const DEFAULT_CONFIG: StableSentinelConfig = {
   apiKeys: {
     coingecko: process.env.COINGECKO_API_KEY,
     coinmarketcap: process.env.COINMARKETCAP_API_KEY,
+    coingeckoIsPro: process.env.COINGECKO_IS_PRO === 'true',
   },
   cache: {
     enabled: true,
@@ -128,10 +129,14 @@ let configInstance: ConfigManager | null = null;
 
 /**
  * Initialize or get config instance
+ * When userConfig is provided, always creates a new instance
  */
 export function getConfig(userConfig?: Partial<StableSentinelConfig>): ConfigManager {
-  if (!configInstance) {
+  if (userConfig) {
     configInstance = new ConfigManager(userConfig);
+  }
+  if (!configInstance) {
+    configInstance = new ConfigManager();
   }
   return configInstance;
 }

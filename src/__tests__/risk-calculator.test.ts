@@ -1,5 +1,5 @@
 import { RiskCalculator } from '../core/risk-calculator';
-import { PriceData, AggregatedPrice, LiquidityInfo } from '../types';
+import { PriceData } from '../types';
 
 describe('RiskCalculator', () => {
   let calculator: RiskCalculator;

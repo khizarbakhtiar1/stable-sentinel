@@ -37,8 +37,9 @@ export class StableSentinel extends EventEmitter {
     this.riskCalculator = new RiskCalculator(thresholds);
     
     const apiKey = this.config.getApiKey('coingecko');
+    const isPro = this.config.getConfig().apiKeys?.coingeckoIsPro || false;
     const rpcUrls = this.config.getConfig().rpcUrls;
-    this.priceProvider = new FallbackPriceProvider(apiKey, rpcUrls);
+    this.priceProvider = new FallbackPriceProvider(apiKey, rpcUrls, isPro);
   }
 
   /**
@@ -234,7 +235,7 @@ export class StableSentinel extends EventEmitter {
   /**
    * Get liquidity information (placeholder)
    */
-  private async getLiquidityInfo(symbol: string, chain: ChainId): Promise<LiquidityInfo> {
+  private async getLiquidityInfo(_symbol: string, _chain: ChainId): Promise<LiquidityInfo> {
     // This would fetch real liquidity data from DEXs
     // For now, returning mock data
     return {

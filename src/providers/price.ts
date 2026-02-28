@@ -10,11 +10,16 @@ import { getCache, CacheManager } from '../utils/cache';
 export class CoinGeckoPriceProvider implements IPriceProvider {
   name = 'CoinGecko';
   private apiKey?: string;
-  private baseUrl = 'https://api.coingecko.com/api/v3';
+  private isPro: boolean;
+  private baseUrl: string;
   private cache: CacheManager;
 
-  constructor(apiKey?: string) {
+  constructor(apiKey?: string, isPro: boolean = false) {
     this.apiKey = apiKey;
+    this.isPro = isPro;
+    this.baseUrl = isPro
+      ? 'https://pro-api.coingecko.com/api/v3'
+      : 'https://api.coingecko.com/api/v3';
     this.cache = getCache();
   }
 
@@ -77,22 +82,27 @@ export class CoinGeckoPriceProvider implements IPriceProvider {
 
   private async fetchPrices(coingeckoIds: string[]): Promise<Record<string, number>> {
     const url = `${this.baseUrl}/simple/price`;
-    const params: any = {
+    const params: Record<string, string | boolean> = {
       ids: coingeckoIds.join(','),
       vs_currencies: 'usd',
       include_24hr_vol: true,
     };
 
+    const headers: Record<string, string> = {
+      'Accept': 'application/json',
+    };
+
     if (this.apiKey) {
-      params.x_cg_pro_api_key = this.apiKey;
+      // Use header-based auth (recommended by CoinGecko)
+      // Pro API uses 'x-cg-pro-api-key', Demo/free uses 'x-cg-demo-api-key'
+      const headerKey = this.isPro ? 'x-cg-pro-api-key' : 'x-cg-demo-api-key';
+      headers[headerKey] = this.apiKey;
     }
 
     const response = await axios.get(url, {
       params,
       timeout: 10000,
-      headers: {
-        'Accept': 'application/json',
-      },
+      headers,
     });
 
     const prices: Record<string, number> = {};
@@ -107,8 +117,14 @@ export class CoinGeckoPriceProvider implements IPriceProvider {
 
   async isAvailable(): Promise<boolean> {
     try {
+      const headers: Record<string, string> = {};
+      if (this.apiKey) {
+        const headerKey = this.isPro ? 'x-cg-pro-api-key' : 'x-cg-demo-api-key';
+        headers[headerKey] = this.apiKey;
+      }
       await axios.get(`${this.baseUrl}/ping`, { 
         timeout: 5000,
+        headers,
         validateStatus: (status) => status === 200,
       });
       return true;
@@ -152,7 +168,7 @@ export class ChainlinkPriceProvider implements IPriceProvider {
     this.cache = getCache();
   }
 
-  async getPrices(symbols: string[], chain: ChainId): Promise<PriceData[]> {
+  async getPrices(_symbols: string[], _chain: ChainId): Promise<PriceData[]> {
     const results: PriceData[] = [];
 
     // Note: Chainlink implementation would require ethers.js contract calls
@@ -178,7 +194,7 @@ export class DexPriceProvider implements IPriceProvider {
     this.cache = getCache();
   }
 
-  async getPrices(symbols: string[], chain: ChainId): Promise<PriceData[]> {
+  async getPrices(_symbols: string[], _chain: ChainId): Promise<PriceData[]> {
     const results: PriceData[] = [];
 
     // This would fetch prices from DEXs like Uniswap, Curve, PancakeSwap
@@ -200,9 +216,9 @@ export class FallbackPriceProvider implements IPriceProvider {
   name = 'Fallback';
   private providers: IPriceProvider[];
 
-  constructor(apiKey?: string, rpcUrls?: Partial<Record<ChainId, string>>) {
+  constructor(apiKey?: string, rpcUrls?: Partial<Record<ChainId, string>>, isPro: boolean = false) {
     this.providers = [
-      new CoinGeckoPriceProvider(apiKey),
+      new CoinGeckoPriceProvider(apiKey, isPro),
       new ChainlinkPriceProvider(rpcUrls || {}),
       new DexPriceProvider(),
     ];

@@ -85,6 +85,7 @@ export function formatLargeNumber(num: number): string {
 
 /**
  * Retry function with exponential backoff
+ * Respects 429 rate limit responses by using longer delays
  */
 export async function retry<T>(
   fn: () => Promise<T>,
@@ -96,10 +97,18 @@ export async function retry<T>(
   for (let i = 0; i < maxRetries; i++) {
     try {
       return await fn();
-    } catch (error) {
+    } catch (error: any) {
       lastError = error as Error;
+
+      // If rate limited (429), use a longer backoff
+      const isRateLimited =
+        error?.response?.status === 429 || error?.status === 429;
+      const backoff = isRateLimited
+        ? Math.max(delay * Math.pow(2, i), 5000) // min 5s for rate limits
+        : delay * Math.pow(2, i);
+
       if (i < maxRetries - 1) {
-        await sleep(delay * Math.pow(2, i));
+        await sleep(backoff);
       }
     }
   }

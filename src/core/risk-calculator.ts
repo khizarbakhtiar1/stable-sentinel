@@ -13,7 +13,6 @@ import {
   removeOutliers,
   clamp,
 } from '../utils/math';
-import { getStablecoin } from '../data/stablecoins';
 
 /**
  * Risk calculator for stablecoins

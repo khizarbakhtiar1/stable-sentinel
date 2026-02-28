@@ -62,10 +62,15 @@ program
         options.chain
       );
 
-      spinner.succeed('Health data fetched');
-      console.log();
-
-      displayHealthTable(reports);
+      if (reports.length === 0) {
+        spinner.warn('No health data could be fetched (all requests failed — possible rate limiting)');
+        console.log(chalk.yellow('\nTip: Set COINGECKO_API_KEY in your .env file to avoid rate limits.'));
+        console.log(chalk.yellow('Get a free key at https://www.coingecko.com/en/api/pricing\n'));
+      } else {
+        spinner.succeed('Health data fetched');
+        console.log();
+        displayHealthTable(reports);
+      }
     } catch (error) {
       spinner.fail('Failed to fetch health data');
       console.error(chalk.red((error as Error).message));
@@ -121,10 +126,13 @@ program
     for (const symbol of stablecoins) {
       const metadata = getStablecoin(symbol)!;
       const chains = Object.keys(metadata.addresses).join(', ');
+      const label = metadata.deprecated
+        ? chalk.gray.strikethrough(symbol) + ' ' + chalk.red('(deprecated)')
+        : chalk.bold(symbol);
       
       table.push([
-        chalk.bold(symbol),
-        metadata.name,
+        label,
+        metadata.deprecated ? chalk.gray(metadata.name) : metadata.name,
         metadata.type,
         chains,
       ]);

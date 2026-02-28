@@ -76,10 +76,17 @@ let cacheInstance: CacheManager | null = null;
 
 /**
  * Get or create cache instance
+ * When ttl/enabled are provided, always creates a new instance
  */
 export function getCache(ttl?: number, enabled?: boolean): CacheManager {
-  if (!cacheInstance) {
+  if (ttl !== undefined || enabled !== undefined) {
+    if (cacheInstance) {
+      cacheInstance.clear();
+    }
     cacheInstance = new CacheManager(ttl, enabled);
+  }
+  if (!cacheInstance) {
+    cacheInstance = new CacheManager();
   }
   return cacheInstance;
 }

@@ -63,6 +63,7 @@ export const STABLECOIN_REGISTRY: Record<string, StablecoinMetadata> = {
     targetPrice: 1.0,
     decimals: 18,
     coingeckoId: 'binance-usd',
+    deprecated: true, // Paxos stopped minting BUSD in Feb 2023
     addresses: {
       ethereum: '0x4Fabb145d64652a948d72533023f6E7A623C7C53',
       bsc: '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56',
