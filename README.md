@@ -150,9 +150,4 @@ MIT License - see LICENSE file for details
 
 This tool is for informational purposes only. It does not constitute financial advice. Always do your own research before making investment decisions.
 
-##  Links
-
-- GitHub: [Repository link]
-- Documentation: [Docs link]
-- Issues: [Issues link]
 
